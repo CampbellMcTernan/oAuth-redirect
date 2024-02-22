@@ -14,14 +14,37 @@
             var accessToken = params.get('access_token');
             var error = params.get('error');
 
-            // Check if there was an error during the authorization process
-            if (error) {
-                console.error('Error: ' + error);
-            } else if (accessToken) {
-                // Process the access token as needed (e.g., store it securely, use it to make API requests, etc.)
-                console.log('Access Token:', accessToken);
+            // If the response is in the URL parameter format
+            if (accessToken || error) {
+                // Check if there was an error during the authorization process
+                if (error) {
+                    console.error('Error: ' + error);
+                } else if (accessToken) {
+                    // Process the access token as needed (e.g., store it securely, use it to make API requests, etc.)
+                    console.log('Access Token:', accessToken);
+                }
             } else {
-                console.error('Unable to extract access token from URL');
+                // If the response is in JSON format, fetch and parse the data
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Extract the access token and error from the JSON response
+                        accessToken = data.access_token;
+                        error = data.error;
+
+                        // Check if there was an error during the authorization process
+                        if (error) {
+                            console.error('Error: ' + error);
+                        } else if (accessToken) {
+                            // Process the access token as needed (e.g., store it securely, use it to make API requests, etc.)
+                            console.log('Access Token:', accessToken);
+                        } else {
+                            console.error('Unable to extract access token from response');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error parsing JSON response:', error);
+                    });
             }
 
             // Close the window to complete the redirect flow
