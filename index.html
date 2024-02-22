@@ -4,11 +4,27 @@
     <title>OAuth 2.0 Redirect</title>
     <script>
         function handleRedirect() {
-            // Process the redirect response and extract the required information
-            // This code will depend on the specific OAuth 2.0 flow and the response format
-            // You may need to parse the URL parameters, extract the access token, etc.
+            // Get the current URL
+            var url = window.location.href;
 
-            // Once you have the required information, you can close the window
+            // Parse the URL parameters
+            var params = new URLSearchParams(url.split('#')[0].split('?')[1]);
+
+            // Extract the access token and error from the URL parameters
+            var accessToken = params.get('access_token');
+            var error = params.get('error');
+
+            // Check if there was an error during the authorization process
+            if (error) {
+                console.error('Error: ' + error);
+            } else if (accessToken) {
+                // Process the access token as needed (e.g., store it securely, use it to make API requests, etc.)
+                console.log('Access Token:', accessToken);
+            } else {
+                console.error('Unable to extract access token from URL');
+            }
+
+            // Close the window to complete the redirect flow
             window.close();
         }
     </script>
